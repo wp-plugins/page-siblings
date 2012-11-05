@@ -34,3 +34,6 @@ News
 
 = 1.0 =
 * Initial version
+
+= 1.0.1 =
+* added a filtering option to page editing, so you can only display parent pages

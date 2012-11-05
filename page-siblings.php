@@ -4,7 +4,7 @@ Plugin Name: Page Siblings
 Plugin URI: http://wordpress.org/extend/plugins/page-siblings
 Description: Add a metabox with all page edit (and any other hierarchal post types) that display an edit link to its siblings.
 Author: Ionuț Staicu
-Version: 1.0
+Version: 1.0.1
 Author URI: http://iamntz.com
 */
 
@@ -27,9 +27,34 @@ class Ntz_Page_Siblings{
           array( &$this, 'the_metabox' ),
           $post_type, 'side'
         );
+
+        add_action('restrict_manage_posts', array( &$this, 'add_column_filters' ) );
+        add_filter( 'request', array( &$this, 'alter_query' ) );
       }
     }
   } // add_metabox
+
+
+  public function add_column_filters(){
+    $current_setting = (int) $_GET['display_only_parents'];
+    ?>
+    <select name="display_only_parents">
+      <option value="0" <?php selected( $current_setting, 0 ); ?>>Display Only Parent Posts</option>
+      <option value="1" <?php selected( $current_setting, 1 ); ?>>No</option>
+      <option value="2" <?php selected( $current_setting, 2 ); ?>>Yes</option>
+    </select>
+    <?php 
+  } // add_column_filters
+
+
+  public function alter_query( $vars = '' ){
+    if ( isset( $_GET['display_only_parents'] ) && $_GET['display_only_parents'] == 2 ) {
+      $vars = array_merge( $vars, array(
+        "post_parent" => 0
+      ) );
+    }
+    return $vars;
+  } // alter_query
 
 
   public function the_metabox( $post_data, $meta_info ){
