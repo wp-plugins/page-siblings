@@ -37,3 +37,6 @@ News
 
 = 1.0.1 =
 * added a filtering option to page editing, so you can only display parent pages
+
+= 1.0.2 =
+* tweaked code a little & removed PHP notices & warnings

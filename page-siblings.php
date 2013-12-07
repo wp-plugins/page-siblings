@@ -1,10 +1,10 @@
-<?php 
+<?php
 /*
 Plugin Name: Page Siblings
 Plugin URI: http://wordpress.org/extend/plugins/page-siblings
 Description: Add a metabox with all page edit (and any other hierarchal post types) that display an edit link to its siblings.
 Author: Ionuț Staicu
-Version: 1.0.1
+Version: 1.0.2
 Author URI: http://iamntz.com
 */
 
@@ -29,31 +29,28 @@ class Ntz_Page_Siblings{
         );
 
         add_action('restrict_manage_posts', array( &$this, 'add_column_filters' ) );
-        add_filter( 'request', array( &$this, 'alter_query' ) );
+        add_filter( 'parse_query', array( &$this, 'alter_query' ) );
       }
     }
   } // add_metabox
 
 
   public function add_column_filters(){
-    $current_setting = (int) $_GET['display_only_parents'];
+    $current_setting = isset( $_GET['display_only_parents'] ) ? (int) $_GET['display_only_parents'] : 0;
     ?>
     <select name="display_only_parents">
-      <option value="0" <?php selected( $current_setting, 0 ); ?>>Display Only Parent Posts</option>
-      <option value="1" <?php selected( $current_setting, 1 ); ?>>No</option>
-      <option value="2" <?php selected( $current_setting, 2 ); ?>>Yes</option>
+      <option value="all" <?php selected( $current_setting, 1 ); ?>>Show Parents And Children</option>
+      <option value="parents_only" <?php selected( $current_setting, 2 ); ?>>Show Only Parents</option>
     </select>
-    <?php 
+    <?php
   } // add_column_filters
 
 
-  public function alter_query( $vars = '' ){
-    if ( isset( $_GET['display_only_parents'] ) && $_GET['display_only_parents'] == 2 ) {
-      $vars = array_merge( $vars, array(
-        "post_parent" => 0
-      ) );
+  public function alter_query( $query ){
+    if ( isset( $_GET['display_only_parents'] ) && $_GET['display_only_parents'] == 'parents_only' ) {
+      $query_vars = &$query->query_vars;
+      $query_vars['post_parent'] = 0;
     }
-    return $vars;
   } // alter_query
 
 
@@ -67,7 +64,7 @@ class Ntz_Page_Siblings{
       }
     </style>
     <ul>
-    <?php 
+    <?php
 
     if( $post_data->post_parent > 0 ){
       $ancestors = get_post_ancestors( $post_data->ID );
@@ -78,9 +75,11 @@ class Ntz_Page_Siblings{
     }
     $parent = get_post( $parent_id );
 
-    if( $parent > 0 ){
+    if( $parent ){
       $this->print_child( $parent );
       $this->loop_through_children( $parent_id, $post_type );
+    }else {
+      echo "<li>This entry doesn't have any siblings</li>";
     }
     echo "</ul>";
   }// the_metabox
@@ -117,7 +116,7 @@ class Ntz_Page_Siblings{
     printf( '<li>%s <a href="%s" style="%s">%s</a>',
       ( !empty( $prefix ) ? "<span class='pipe'>|</span>{$prefix}" : '' ),
       get_edit_post_link( $child->ID ),
-      ( $child->ID == $_GET['post'] ? 'font-weight:700;' : '' ),
+      ( isset( $_GET['post'] ) && $child->ID == $_GET['post'] ? 'font-weight:700;' : '' ),
       esc_attr( $child->post_title )
     );
 
