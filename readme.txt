@@ -1,9 +1,10 @@
-=== Plugin Name ===
-Contributors: Ionuț Staicu
-Donate link: http://iamntz.com/wishlist
+=== Page Siblings ===
+Contributors: iamntz
 Tags: page administration, utils, custom post type
 Requires at least: 3.0
-Tested up to: 3.5
+Tested up to: 3.8
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A metabox with all page edit (and any other hierarchal post types) that display an edit link to its siblings.
 
@@ -40,3 +41,6 @@ News
 
 = 1.0.2 =
 * tweaked code a little & removed PHP notices & warnings
+
+= 1.0.3 =
+* Updated readme

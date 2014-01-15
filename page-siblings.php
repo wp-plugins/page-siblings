@@ -4,7 +4,7 @@ Plugin Name: Page Siblings
 Plugin URI: http://wordpress.org/extend/plugins/page-siblings
 Description: Add a metabox with all page edit (and any other hierarchal post types) that display an edit link to its siblings.
 Author: Ionuț Staicu
-Version: 1.0.2
+Version: 1.0.3
 Author URI: http://iamntz.com
 */
 
