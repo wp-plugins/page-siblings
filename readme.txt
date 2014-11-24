@@ -44,3 +44,6 @@ News
 
 = 1.0.3 =
 * Updated readme
+
+= 1.0.4 =
+* added correct sorting for pages (thanks Jakob for pointing this)
